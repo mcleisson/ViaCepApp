@@ -1,0 +1,24 @@
+<!-- app/views/cep/consulta_cep.html.erb -->
+<h1>Consulta de CEP</h1>
+
+<%= form_tag consulta_cep_path, method: :get do %>
+  <div class="field">
+    <%= label_tag 'cep', 'CEP:' %>
+    <%= text_field_tag 'cep', nil, placeholder: 'Digite o CEP desejado', required: true %>
+  </div>
+
+  <%= submit_tag 'Consultar', class: 'btn btn-primary' %>
+<% end %>
+
+<div id="resultado">
+  <% if @cep_data %>
+    <h2>Resultado da consulta:</h2>
+    <p><strong>CEP:</strong> <%= @cep_data['cep'] %></p>
+    <p><strong>Logradouro:</strong> <%= @cep_data['logradouro'] %></p>
+    <p><strong>Bairro:</strong> <%= @cep_data['bairro'] %></p>
+    <p><strong>Cidade:</strong> <%= @cep_data['localidade'] %></p>
+    <p><strong>Estado:</strong> <%= @cep_data['uf'] %></p>
+  <% elsif @cep_error %>
+    <p><strong>Erro:</strong> <%= @cep_error %></p>
+  <% end %>
+</div>

@@ -1,0 +1,92 @@
+<%= form_for(@contato, html: { class: 'form' }) do |f| %>
+  <div class="form-group">
+  <%= f.hidden_field :user_id, value: current_user.id %>
+    <%= f.label :nome %>
+    <%= f.text_field :nome, class: 'form-control' %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :cpf, "CPF" %>
+    <%= f.text_field :cpf, class: "form-control" %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :email %>
+    <%= f.text_field :email, class: 'form-control' %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :telefone %>
+    <%= f.text_field :telefone, class: 'form-control' %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :cep, "CEP" %>
+    <%= f.text_field :cep, class: 'form-control cep-input' %>
+    <%= link_to "Pesquisar CEP", "#", id: "cep-pesquisa-link", class: 'btn btn-primary mt-2' %>
+  </div>
+
+  <div id="endereco" class="mt-2">
+    <%= f.label :logradouro, "Logradouro" %>
+    <%= f.text_field :logradouro, class: 'form-control endereco-input' %>
+    <%= f.hidden_field :latitude %>
+    <%= f.hidden_field :longitude %>
+
+    <%= f.label :bairro, "Bairro" %>
+    <%= f.text_field :bairro, class: 'form-control endereco-input' %>
+
+    <%= f.label :cidade, "Cidade" %>
+    <%= f.text_field :cidade, class: 'form-control endereco-input' %>
+
+    <%= f.label :estado, "Estado" %>
+    <%= f.text_field :estado, class: 'form-control endereco-input' %>
+  </div>
+  
+  <div class="actions">
+    <%= f.submit "Salvar", class: 'btn btn-success mt-2' %>
+  </div>
+<% end %>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const cepInput        = document.querySelector('.cep-input');
+  const enderecoFields  = document.querySelectorAll('.endereco-input');
+  const latInput        = document.querySelector('#contato_latitude');
+  const lonInput        = document.querySelector('#contato_longitude');
+  const cepPesquisaLink = document.querySelector('#cep-pesquisa-link');
+  
+  cepPesquisaLink.addEventListener('click', function(e) {
+    e.preventDefault();
+
+    const cep = cepInput.value.replace(/\D/g, ''); // Remove caracteres não numéricos
+
+    if (cep.length !== 8) {
+      alert('O CEP deve conter 8 dígitos.');
+      return;
+    }
+
+    // Fazer uma solicitação AJAX para a API do ViaCEP
+    fetch(`https://viacep.com.br/ws/${cep}/json/`)
+      .then(response => response.json())
+      .then(data => {
+        if (data.erro) {
+          alert('CEP não encontrado.');
+        } else {
+          // Preencher os campos de endereço com os dados do CEP
+          enderecoFields[0].value = data.logradouro;
+          enderecoFields[1].value = data.bairro;
+          enderecoFields[2].value = data.localidade;
+          enderecoFields[3].value = data.uf;
+
+          // Inserir automaticamente as coordenadas de latitude e longitude nos campos correspondentes
+          latInput.value = ''; // Limpar o valor anterior, se houver
+          lonInput.value = ''; // Limpar o valor anterior, se houver
+        }
+      })
+      .catch(error => {
+        console.error('Ocorreu um erro ao buscar o CEP:', error);
+      });
+  });
+});
+
+</script>

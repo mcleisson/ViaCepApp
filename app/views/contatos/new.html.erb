@@ -1,0 +1,11 @@
+<div class="container mt-4">
+  <h1 class="display-4">Cadastrar Contato</h1>
+<% if flash[:error] %>
+    <div class="alert alert-danger">
+      <%= flash[:error] %>
+    </div>
+<% end %>
+  <%= render 'form' %>
+
+  <%= link_to 'Voltar', contatos_path, class: 'btn btn-secondary mt-2' %>
+</div>
