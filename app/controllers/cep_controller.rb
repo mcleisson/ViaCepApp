@@ -1,5 +1,6 @@
 # app/controllers/cep_controller.rb
 class CepController < ApplicationController
+  before_action :authenticate_user!
     require 'httparty'
   
     def consulta_cep
@@ -13,5 +14,5 @@ class CepController < ApplicationController
         render json: { error: 'CEP não encontrado' }, status: 404
       end
     end
-  end
+end
   
